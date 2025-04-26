@@ -1,19 +1,20 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function LegalMattersPage() {
   const [activeSection, setActiveSection] = useState('terms');
   
   const sections = [
-    { id: 'terms', title: 'Terms of service' },
-    { id: 'cancellation', title: 'Cancellation policy' },
-    { id: 'privacy', title: 'Privacy policy' },
-    { id: 'community', title: 'Community guidelines' },
-    { id: 'nondiscrimination', title: 'Nondiscrimination policy' },
-    { id: 'additional', title: 'Additional policies' },
-    { id: 'turo', title: 'Turo Travels Mutual' },
-    { id: 'gift', title: 'Gift card terms' },
+    { id: 'terms', title: 'Terms of service', route: '/terms-of-service' },
+    { id: 'cancellation', title: 'Cancellation policy', route: '/cancellation-policy' },
+    { id: 'privacy', title: 'Privacy policy', route: '/privacy-policy' },
+    { id: 'community', title: 'Community guidelines', route: '/community-guidelines' },
+    { id: 'nondiscrimination', title: 'Nondiscrimination policy', route: '/nondiscrimination-policy' },
+    { id: 'additional', title: 'Additional policies', route: '/additional-policies' },
+    { id: 'turo', title: 'Turo Travels Mutual', route: '/turo-travels-mutual' },
+    { id: 'gift', title: 'Gift card terms', route: '/gift-card-terms' },
   ];
-  
+
   const tosLinks = [
     { id: 'intro', title: 'Introduction' },
     { id: 'eligibility', title: 'Eligibility, registration, verification' },
@@ -34,13 +35,14 @@ export default function LegalMattersPage() {
         {/* Navigation */}
         <div className="flex flex-wrap justify-center mt-8 max-w-4xl mx-auto px-4">
           {sections.map((section) => (
-            <button 
+            <Link
               key={section.id}
+              to={section.route}
               className={`mx-2 my-1 px-2 py-1 ${activeSection === section.id ? 'underline' : ''}`}
               onClick={() => setActiveSection(section.id)}
             >
               {section.title}
-            </button>
+            </Link>
           ))}
         </div>
       </div>
@@ -51,7 +53,7 @@ export default function LegalMattersPage() {
         <p className="text-center text-gray-300 mb-8">Last revised: March 19, 2025</p>
         
         <div className="mb-8">
-          <p className=" text-white capitalize  bg-green-700 p-5 rounded-2xl font-medium mb-6">
+          <p className=" text-white capitalize bg-green-800 p-5 rounded-2xl font-medium mb-6">
             PLEASE READ THESE TERMS OF SERVICE CAREFULLY. THEY CONTAIN IMPORTANT INFORMATION THAT AFFECTS YOUR
             RIGHTS, REMEDIES, AND OBLIGATIONS. THEY INCLUDE AN AGREEMENT TO ARBITRATE (UNLESS YOU OPT OUT). THESE
             TERMS ALSO INCLUDE A PROHIBITION OF CLASS AND REPRESENTATIVE ACTIONS AND NON-INDIVIDUALIZED RELIEF

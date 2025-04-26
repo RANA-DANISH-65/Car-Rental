@@ -3,19 +3,20 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const VerificationPage = () => {
-    const navigate=useNavigate();
+  const navigate = useNavigate();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false); // NEW STATE
 
   const handleChange = (index, value) => {
-    if (!/^[0-9]?$/.test(value)) return; // Allow only numbers
+    if (!/^[0-9]?$/.test(value)) return; // Only allow single digit numbers
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Move focus
+    // Auto move to next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -38,14 +39,21 @@ const VerificationPage = () => {
     try {
       const response = await axios.post('https://car-rental-backend-black.vercel.app/users/verify-email', { code });
       console.log(response);
-      setSuccess(response.data.message);
-      if(response.ok){
-        navigate("/login");
-      }
+
+      setSuccess('Verification successful! Please login.');
       setError(null);
+      setIsVerifying(true); // Start verifying state
+
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+
     } catch (err) {
+      console.error(err);
       setError(err.response?.data?.message || 'Verification failed.');
       setSuccess(null);
+      setIsVerifying(false); // Stop verifying if error
     }
   };
 
@@ -66,6 +74,7 @@ const VerificationPage = () => {
               onKeyDown={(e) => handleKeyDown(e, index)}
               ref={(el) => (inputRefs.current[index] = el)}
               className="w-12 h-12 text-center text-lg border border-[#1ecb15] bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-[#1ecb15]"
+              disabled={isVerifying} // Disable input while verifying
             />
           ))}
         </div>
@@ -75,9 +84,12 @@ const VerificationPage = () => {
 
         <button
           onClick={handleSubmit}
-          className="bg-[#1ecb15] text-black px-6 py-2 rounded hover:bg-green-500 transition"
+          disabled={isVerifying}
+          className={`bg-[#1ecb15] text-black px-6 py-2 rounded w-full ${
+            isVerifying ? "opacity-50 cursor-not-allowed" : "hover:bg-green-500 transition"
+          }`}
         >
-          Verify
+          {isVerifying ? "Redirecting..." : "Verify"}
         </button>
       </div>
     </div>

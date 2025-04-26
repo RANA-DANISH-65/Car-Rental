@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 
 const RentalCompanySignUp = () => {
   const navigate = useNavigate();
@@ -167,51 +167,53 @@ const RentalCompanySignUp = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     if (!validateForm()) return;
-    
+  
     setLoading(true);
-    
+  
     try {
       const formDataToSend = new FormData();
-      
+  
       Object.entries(formData).forEach(([key, value]) => {
         if (key !== 'confirmPassword') {
           formDataToSend.append(key, value);
         }
       });
-      
+  
       formDataToSend.append('cnicFront', files.cnicFront);
       formDataToSend.append('cnicBack', files.cnicBack);
-      
-      // Using the response properly
-      const { data } = await axios.post(
-        'https://car-rental-backend-black.vercel.app/api/rental-companies/postRental', 
-        formDataToSend,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-      
+  
+      const response = await fetch('https://car-rental-backend-black.vercel.app/rental-companies/postRental', {
+        method: 'POST',
+        body: formDataToSend,
+        // Don't set Content-Type header manually with FormData — browser will handle it (boundary included automatically)
+      });
+  
+      const data = await response.json();
+      console.log(data);
+  
+      if (!response.ok) {
+        // Handle server error properly
+        throw new Error(data.message || 'Registration failed. Please try again.');
+      }
+  
       navigate('/login', { 
         state: { 
-          message: data?.message || 'Registration successful! Please login.',
+          message: data?.message || 'Registration successful! Please login.', 
           success: true 
         } 
       });
-      
+  
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 
-                         err.message || 
-                         'Registration failed. Please try again later.';
+      const errorMessage = err.message || 'Registration failed. Please try again later.';
       setError(errorMessage);
       console.error('Registration error:', err);
     } finally {
       setLoading(false);
     }
   };
+  
   
   const provinceOptions = [
     'Punjab',

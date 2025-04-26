@@ -6,7 +6,8 @@ import { useGoogleAuth } from "../components/GoogleAuth";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { isLoading, renderGoogleButton, signInWithGoogle } = useGoogleAuth();
+  const [loading, setLoading] = useState(false);
+  const {renderGoogleButton, signInWithGoogle } = useGoogleAuth();
   const googleButtonRef = useRef(null);
   const [error, setError] = useState("");
 
@@ -18,9 +19,9 @@ const Signup = () => {
     phoneNo: "",
     cnic: "",
     licenseNumber: "",
-    city:"",
-    province:"",
-    address:""
+    city: "",
+    province: "",
+    address: "",
   });
 
   const [files, setFiles] = useState({
@@ -28,7 +29,7 @@ const Signup = () => {
     cnicBack: null,
     licenseFront: null,
     licenseBack: null,
-    profilePic:null
+    profilePic: null,
   });
 
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -73,6 +74,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     // Validate all fields
     for (let key in formData) {
@@ -150,12 +152,24 @@ const Signup = () => {
       console.log(data);
 
       if (!response.ok) {
-        throw new Error(data.message || "Signup failed. Please try again.");
+        setLoading(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        if (data.message) {
+          setError(data.message);
+        } else if (Array.isArray(data.errors)) {
+          setError(data.errors.join(", "));
+        } else {
+          setError("Signup failed. Please try again.");
+        }
+        return;
       }
 
+      setLoading(false);
       navigate("/verification");
     } catch (error) {
-      setError(error.message || "An error occurred. Please try again.");
+      console.error(error);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
@@ -292,7 +306,7 @@ const Signup = () => {
                 required
               />
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="address">Province</label>
               <input
@@ -391,21 +405,20 @@ const Signup = () => {
                 </div>
               </div>
               <div className="file-group half-width">
-                  <label htmlFor="licenseBack">Profile Pic:</label>
-                  <div className="file-input-container text-black">
-                    <input
-                      type="file"
-                      id="profilePic"
-                      name="profilePic"
-                      onChange={handleFileChange}
-                      required
-                    />
-                    {files.profilePic && (
-                      <span className="file-selected">✓ File Selected</span>
-                    )}
-                  </div>
+                <label htmlFor="licenseBack">Profile Pic:</label>
+                <div className="file-input-container text-black">
+                  <input
+                    type="file"
+                    id="profilePic"
+                    name="profilePic"
+                    onChange={handleFileChange}
+                    required
+                  />
+                  {files.profilePic && (
+                    <span className="file-selected">✓ File Selected</span>
+                  )}
                 </div>
-
+              </div>
             </div>
 
             <div className="terms-container">
@@ -419,7 +432,7 @@ const Signup = () => {
                   required
                 />
                 <label className="form-check-label" htmlFor="terms">
-                  I agree to the <a href="#" >Terms & Conditions</a> and{" "}
+                  I agree to the <a href="#">Terms & Conditions</a> and{" "}
                   <a href="#">Privacy Policy</a>.
                 </label>
               </div>
@@ -428,9 +441,9 @@ const Signup = () => {
             <button
               type="submit"
               className="signup-button"
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? "Please wait..." : "Sign Up"}
+              {loading ? "Please wait..." : "Sign Up"}
             </button>
 
             <div className="signup-divider">
