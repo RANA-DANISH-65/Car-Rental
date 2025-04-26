@@ -1,0 +1,159 @@
+/* Login.css */
+:root {
+  --text-color: #333;
+  --text-secondary: #6c757d;
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --border-color: #dee2e6;
+  --error-color: #dc3545;
+  --success-color: #198754;
+  --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+}
+
+.login-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, sans-serif;
+}
+
+/* Left side with image */
+.login-left {
+  width: 50%;
+  position: relative;
+  /* background-color: var(--primary-color); */
+  background-color: #179510;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+
+
+.login-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+
+/* Right side with login form */
+.login-right {
+  width: 50%;
+  background-color: #121212;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 450px;
+  padding: 2rem;
+  border-radius: 16px;
+  background-color: #1a1a1a;
+}
+
+/* Form styles */
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05); /* translucent background */
+  backdrop-filter: blur(10px); /* blur for glass effect */
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #1ECB15;
+  box-shadow: 0 0 0 0.2rem rgba(30, 203, 21, 0.3); /* soft green glow */
+  background-color: rgba(255, 255, 255, 0.08); /* slightly brighter on focus */
+}
+
+
+/* Button styles */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background-color: #179510;
+}
+
+.btn-primary:hover {
+  background-color: #1ECB15;
+  border: none;
+}
+
+.btn-outline-secondary {
+  border: 1px solid var(--border-color);
+  background-color: var(--white);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--light-bg);
+}
+
+#google-login-button {
+  width: 100%;
+}
+
+/* Fix for button width */
+.login-box .btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Error message */
+.text-danger {
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .login-left,
+  .login-right {
+    width: 100%;
+  }
+  
+  .login-left {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-right {
+    padding: 1rem;
+  }
+  
+  .login-box {
+    padding: 1.5rem;
+  }
+  
+  /* Make form elements stack better on mobile */
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+}
