@@ -1,4 +1,6 @@
+// Header.jsx
 import React, { useState, useRef, useEffect } from "react";
+import Cookies from "js-cookie";
 import {
   Menu,
   X,
@@ -13,22 +15,27 @@ import {
   LogOut,
   UserPlus,
 } from "lucide-react";
-
 import { useNavigate } from "react-router-dom";
 
 const SideMenu = ({ isOpen, onClose }) => {
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    const user = Cookies.get("user");
+    setIsLoggedIn(!!user); // Check if user cookie exists
+
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         onClose();
       }
     };
+
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -67,21 +74,24 @@ const SideMenu = ({ isOpen, onClose }) => {
         navigate("/contact");
         break;
       case "Log out":
-        console.log("Logging out");
-        navigate("/");
+        Cookies.remove("user"); // Clear user cookie
+        setIsLoggedIn(false);   // Update state
+        navigate("/login");     // Navigate to login
         break;
       default:
         break;
     }
-    onClose();
+    onClose(); // Always close the menu
   };
 
   const menuItems = [
-    // NEW: Login and Sign Up added first
-    { icon: User, text: "Login" },
-    { icon: UserPlus, text: "Sign Up" },
-    // Divider line will appear below
-    "divider",
+    ...(!isLoggedIn
+      ? [
+          { icon: User, text: "Login" },
+          { icon: UserPlus, text: "Sign Up" },
+          "divider",
+        ]
+      : []),
     { icon: Heart, text: "Favorites" },
     { icon: Calendar, text: "Trips" },
     { icon: Inbox, text: "Inbox" },
@@ -90,16 +100,15 @@ const SideMenu = ({ isOpen, onClose }) => {
     { icon: HelpCircle, text: "How Drive Fleet works" },
     { icon: HelpCircle, text: "Contact support" },
     { icon: FileText, text: "Legal" },
-    { icon: LogOut, text: "Log out" },
+    ...(isLoggedIn ? [{ icon: LogOut, text: "Log out" }] : []),
   ];
 
   return (
     <div
       ref={menuRef}
       className={`fixed inset-y-16 right-0 w-64 bg-[#1a1a1a] shadow-lg transform transition-transform duration-300 ease-in-out
-    ${
-      isOpen ? "translate-x-0" : "translate-x-full"
-    } z-50 overflow-y-auto max-h-[calc(100vh-8rem)]`}
+      ${isOpen ? "translate-x-0" : "translate-x-full"}
+      z-50 overflow-y-auto max-h-[calc(100vh-8rem)]`}
     >
       <div className="py-2">
         {menuItems.map((item, index) => {
@@ -130,7 +139,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
   };
 
   const goToHome = () => {
@@ -143,10 +152,10 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-[#1a1a1a] ">
+      <header className="bg-[#1a1a1a]">
         <div className="flex justify-between items-center px-4 py-3">
           <div
-            className="text-5xl text-[#1ecb15]  font-medium cursor-pointer"
+            className="text-5xl text-[#1ecb15] font-medium cursor-pointer"
             onClick={goToHome}
           >
             Drive Fleet
@@ -171,7 +180,9 @@ const Header = () => {
 
       <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
-      {isMenuOpen && <div className="fixed inset-0 bg-opacity-50 z-40" />}
+      {isMenuOpen && (
+        <div className="fixed  bg-black bg-opacity-50 z-40" />
+      )}
     </>
   );
 };
