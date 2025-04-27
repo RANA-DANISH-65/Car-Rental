@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { 
-  Users, Building, Truck, UserCircle, Home, 
-  ChevronDown, Search, Plus, Edit, Trash2, 
-  MoreHorizontal 
-} from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Users,
+  Building,
+  Truck,
+  UserCircle,
+  Home,
+  ChevronDown,
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+} from "lucide-react";
 
-const BASE_URL = 'https://car-rental-backend-black.vercel.app';
+const BASE_URL = "https://car-rental-backend-black.vercel.app";
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [openDropdown, setOpenDropdown] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,7 +25,7 @@ const AdminDashboard = () => {
     users: [],
     companies: [],
     vehicles: [],
-    drivers: []
+    drivers: [],
   });
   const [editingItem, setEditingItem] = useState(null);
   const [editFormData, setEditFormData] = useState({});
@@ -28,18 +36,19 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [usersRes, companiesRes, vehiclesRes, driversRes] = await Promise.all([
-          axios.get(`${BASE_URL}/users/all`),
-          axios.get(`${BASE_URL}/rental-companies/getRental`),
-          axios.get(`${BASE_URL}/vehicles/fetchVehicles`),
-          axios.get(`${BASE_URL}/drivers/getDriver`)
-        ]);
+        const [usersRes, companiesRes, vehiclesRes, driversRes] =
+          await Promise.all([
+            axios.get(`${BASE_URL}/users/all`),
+            axios.get(`${BASE_URL}/rental-companies/getRental`),
+            axios.get(`${BASE_URL}/vehicles/fetchVehicles`),
+            axios.get(`${BASE_URL}/drivers/getDriver`),
+          ]);
 
         setData({
           users: usersRes.data,
           companies: companiesRes.data,
           vehicles: vehiclesRes.data,
-          drivers: driversRes.data
+          drivers: driversRes.data,
         });
         setLoading(false);
       } catch (err) {
@@ -64,9 +73,9 @@ const AdminDashboard = () => {
   const handleDelete = async (type, id) => {
     try {
       await axios.delete(`${BASE_URL}/${type}/${id}`);
-      setData(prev => ({
+      setData((prev) => ({
         ...prev,
-        [type]: prev[type].filter(item => item._id !== id)
+        [type]: prev[type].filter((item) => item._id !== id),
       }));
     } catch (err) {
       setError(err.message);
@@ -82,17 +91,23 @@ const AdminDashboard = () => {
 
   const handleUpdate = async () => {
     try {
-      const endpoint = editingItem.type === 'companies' ? 'rental-companies' : editingItem.type;
-      await axios.put(`${BASE_URL}/${endpoint}/${editingItem.id}`, editFormData);
-      
+      const endpoint =
+        editingItem.type === "companies"
+          ? "rental-companies"
+          : editingItem.type;
+      await axios.put(
+        `${BASE_URL}/${endpoint}/${editingItem.id}`,
+        editFormData
+      );
+
       // Update the local state
-      setData(prev => ({
+      setData((prev) => ({
         ...prev,
-        [editingItem.type]: prev[editingItem.type].map(item => 
+        [editingItem.type]: prev[editingItem.type].map((item) =>
           item._id === editingItem.id ? { ...item, ...editFormData } : item
-        )
+        ),
       }));
-      
+
       setShowEditModal(false);
     } catch (err) {
       setError(err.message);
@@ -113,7 +128,7 @@ const AdminDashboard = () => {
       return (
         <div className="bg-red-50 p-4 rounded-lg text-red-600">
           <p>Error: {error}</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="mt-2 px-4 py-2 bg-blue-600 text-white rounded"
           >
@@ -124,46 +139,46 @@ const AdminDashboard = () => {
     }
 
     switch (activeTab) {
-      case 'dashboard':
+      case "dashboard":
         return <DashboardContent {...data} />;
-      case 'users':
+      case "users":
         return (
-          <UsersContent 
-            users={data.users} 
-            toggleDropdown={toggleDropdown} 
+          <UsersContent
+            users={data.users}
+            toggleDropdown={toggleDropdown}
             openDropdown={openDropdown}
-            onDelete={(id) => handleDelete('users', id)}
-            onEdit={(user) => handleEdit('users', user)}
+            onDelete={(id) => handleDelete("users", id)}
+            onEdit={(user) => handleEdit("users", user)}
           />
         );
-      case 'companies':
+      case "companies":
         return (
-          <CompaniesContent 
-            companies={data.companies} 
-            toggleDropdown={toggleDropdown} 
+          <CompaniesContent
+            companies={data.companies}
+            toggleDropdown={toggleDropdown}
             openDropdown={openDropdown}
-            onDelete={(id) => handleDelete('rental-companies', id)}
-            onEdit={(company) => handleEdit('companies', company)}
+            onDelete={(id) => handleDelete("rental-companies", id)}
+            onEdit={(company) => handleEdit("companies", company)}
           />
         );
-      case 'vehicles':
+      case "vehicles":
         return (
-          <VehiclesContent 
-            vehicles={data.vehicles} 
-            toggleDropdown={toggleDropdown} 
+          <VehiclesContent
+            vehicles={data.vehicles}
+            toggleDropdown={toggleDropdown}
             openDropdown={openDropdown}
-            onDelete={(id) => handleDelete('vehicles', id)}
-            onEdit={(vehicle) => handleEdit('vehicles', vehicle)}
+            onDelete={(id) => handleDelete("vehicles", id)}
+            onEdit={(vehicle) => handleEdit("vehicles", vehicle)}
           />
         );
-      case 'drivers':
+      case "drivers":
         return (
-          <DriversContent 
-            drivers={data.drivers} 
-            toggleDropdown={toggleDropdown} 
+          <DriversContent
+            drivers={data.drivers}
+            toggleDropdown={toggleDropdown}
             openDropdown={openDropdown}
-            onDelete={(id) => handleDelete('drivers', id)}
-            onEdit={(driver) => handleEdit('drivers', driver)}
+            onDelete={(id) => handleDelete("drivers", id)}
+            onEdit={(driver) => handleEdit("drivers", driver)}
           />
         );
       default:
@@ -176,9 +191,9 @@ const AdminDashboard = () => {
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setEditFormData(prev => ({
+      setEditFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     };
 
@@ -188,34 +203,40 @@ const AdminDashboard = () => {
           <h3 className="text-lg font-semibold mb-4">
             Edit {editingItem.type}
           </h3>
-          
-          {editingItem.type === 'users' && (
+
+          {editingItem.type === "users" && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
                 <input
                   type="text"
                   name="name"
-                  value={editFormData.name || ''}
+                  value={editFormData.name || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
                 <input
                   type="email"
                   name="email"
-                  value={editFormData.email || ''}
+                  value={editFormData.email || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Role</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Role
+                </label>
                 <select
                   name="role"
-                  value={editFormData.role || 'user'}
+                  value={editFormData.role || "user"}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 >
@@ -226,34 +247,40 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {editingItem.type === 'companies' && (
+          {editingItem.type === "companies" && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Company Name</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Company Name
+                </label>
                 <input
                   type="text"
                   name="companyName"
-                  value={editFormData.companyName || editFormData.name || ''}
+                  value={editFormData.companyName || editFormData.name || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full  text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Address</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Address
+                </label>
                 <input
                   type="text"
                   name="address"
-                  value={editFormData.address || ''}
+                  value={editFormData.address || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Phone</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Phone
+                </label>
                 <input
                   type="text"
                   name="phNum"
-                  value={editFormData.phNum || ''}
+                  value={editFormData.phNum || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
@@ -261,34 +288,40 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {editingItem.type === 'vehicles' && (
+          {editingItem.type === "vehicles" && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Manufacturer</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Manufacturer
+                </label>
                 <input
                   type="text"
                   name="manufacturer"
-                  value={editFormData.manufacturer || ''}
+                  value={editFormData.manufacturer || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Model</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Model
+                </label>
                 <input
                   type="text"
                   name="model"
-                  value={editFormData.model || ''}
+                  value={editFormData.model || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Rent</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Rent
+                </label>
                 <input
                   type="number"
                   name="rent"
-                  value={editFormData.rent || ''}
+                  value={editFormData.rent || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
@@ -296,33 +329,39 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {editingItem.type === 'drivers' && (
+          {editingItem.type === "drivers" && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
                 <input
                   type="text"
                   name="name"
-                  value={editFormData.name || ''}
+                  value={editFormData.name || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">License</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  License
+                </label>
                 <input
                   type="text"
                   name="license"
-                  value={editFormData.license || ''}
+                  value={editFormData.license || ""}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Status</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Status
+                </label>
                 <select
                   name="status"
-                  value={editFormData.status || 'Available'}
+                  value={editFormData.status || "Available"}
                   onChange={handleInputChange}
                   className="mt-1 block w-full text-black border border-gray-300 rounded-md p-2"
                 >
@@ -354,77 +393,79 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-[#121212]">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-md">
+      <div className="w-64 bg-[#1a1a1a] shadow-md">
         <div className="p-6 border-b">
-          <h1 className="text-xl font-bold text-gray-800">Rental Admin</h1>
+          <h1 className="text-xl font-bold text-green-400">Rental Admin</h1>
         </div>
         <nav className="mt-6">
-          <SidebarLink 
-            icon={<Home size={20} />} 
-            title="Dashboard" 
-            active={activeTab === 'dashboard'} 
-            onClick={() => handleTabChange('dashboard')} 
+          <SidebarLink
+            icon={<Home size={20} />}
+            title="Dashboard"
+            active={activeTab === "dashboard"}
+            onClick={() => handleTabChange("dashboard")}
           />
-          <SidebarLink 
-            icon={<Users size={20} />} 
-            title="Users" 
-            active={activeTab === 'users'} 
-            onClick={() => handleTabChange('users')} 
+          <SidebarLink
+            icon={<Users size={20} />}
+            title="Users"
+            active={activeTab === "users"}
+            onClick={() => handleTabChange("users")}
           />
-          <SidebarLink 
-            icon={<Building size={20} />} 
-            title="Companies" 
-            active={activeTab === 'companies'} 
-            onClick={() => handleTabChange('companies')} 
+          <SidebarLink
+            icon={<Building size={20} />}
+            title="Companies"
+            active={activeTab === "companies"}
+            onClick={() => handleTabChange("companies")}
           />
-          <SidebarLink 
-            icon={<Truck size={20} />} 
-            title="Vehicles" 
-            active={activeTab === 'vehicles'} 
-            onClick={() => handleTabChange('vehicles')} 
+          <SidebarLink
+            icon={<Truck size={20} />}
+            title="Vehicles"
+            active={activeTab === "vehicles"}
+            onClick={() => handleTabChange("vehicles")}
           />
-          <SidebarLink 
-            icon={<UserCircle size={20} />} 
-            title="Drivers" 
-            active={activeTab === 'drivers'} 
-            onClick={() => handleTabChange('drivers')} 
+          <SidebarLink
+            icon={<UserCircle size={20} />}
+            title="Drivers"
+            active={activeTab === "drivers"}
+            onClick={() => handleTabChange("drivers")}
           />
         </nav>
       </div>
 
       {/* Main content */}
       <div className="flex-1 overflow-auto">
-        <header className="bg-white shadow-sm">
+        <header className="bg-[#333] shadow-sm">
           <div className="flex justify-between items-center px-6 py-4">
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-xl font-semibold text-white">
               {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
             </h2>
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black"
+                  size={18}
+                />
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="pl-10 pr-4 py-2 border text-white border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
               <div className="flex items-center space-x-3">
                 <img
-                  src="/api/placeholder/40/40" 
+                  src="https://ui-avatars.com/api/?name=John+Doe&size=40
+"
                   alt="Admin"
                   className="w-8 h-8 rounded-full"
                 />
-                <span className="font-medium">Admin User</span>
+                <span className="font-medium text-green-500">Admin User</span>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="p-6">
-          {renderContent()}
-        </main>
+        <main className="p-6">{renderContent()}</main>
       </div>
 
       <EditModal />
@@ -436,7 +477,9 @@ const AdminDashboard = () => {
 const SidebarLink = ({ icon, title, active, onClick }) => (
   <div
     className={`flex items-center px-6 py-3 cursor-pointer ${
-      active ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'
+      active
+        ? "bg-green-100 text-green-600 rounded"
+        : "text-gray-600 rounded hover:bg-green-600 hover:text-white"
     }`}
     onClick={onClick}
   >
@@ -449,21 +492,44 @@ const SidebarLink = ({ icon, title, active, onClick }) => (
 const DashboardContent = ({ users, companies, vehicles, drivers }) => (
   <div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-      <StatCard title="Total Users" value={users.length} icon={<Users size={24} className="text-blue-500" />} />
-      <StatCard title="Companies" value={companies.length} icon={<Building size={24} className="text-green-500" />} />
-      <StatCard title="Vehicles" value={vehicles.length} icon={<Truck size={24} className="text-yellow-500" />} />
-      <StatCard title="Drivers" value={drivers.length} icon={<UserCircle size={24} className="text-purple-500" />} />
+      <StatCard
+        title="Total Users"
+        value={users.length}
+        icon={<Users size={24} className="text-blue-500" />}
+      />
+      <StatCard
+        title="Companies"
+        value={companies.length}
+        icon={<Building size={24} className="text-green-500" />}
+      />
+      <StatCard
+        title="Vehicles"
+        value={vehicles.length}
+        icon={<Truck size={24} className="text-yellow-500" />}
+      />
+      <StatCard
+        title="Drivers"
+        value={drivers.length}
+        icon={<UserCircle size={24} className="text-purple-500" />}
+      />
     </div>
 
-    <div className="grid grid-cols-1 text-black lg:grid-cols-2 gap-6">
-      <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="grid grid-cols-1 text-white lg:grid-cols-2 gap-6">
+      <div className="bg-[#333] rounded-lg shadow-sm p-6">
         <h3 className="text-lg font-semibold mb-4">Recent Companies</h3>
         <div className="space-y-4">
-          {companies.slice(0, 3).map(company => (
-            <div key={company._id} className="flex justify-between items-center p-3 border rounded-lg">
+          {companies.slice(0, 3).map((company) => (
+            <div
+              key={company._id}
+              className="flex justify-between items-center bg-[#cecece] p-3 border rounded-lg"
+            >
               <div>
-                <h4 className="font-medium">{company.companyName || company.name}</h4>
-                <p className="text-sm text-gray-500">{company.address || company.location}</p>
+                <h4 className="font-medium text-amber-800">
+                  {company.companyName || company.name}
+                </h4>
+                <p className="text-sm text-gray-700">
+                  {company.address || company.location}
+                </p>
               </div>
               <div>
                 <span className="text-sm bg-blue-100 text-blue-800 py-1 px-2 rounded-full">
@@ -475,16 +541,21 @@ const DashboardContent = ({ users, companies, vehicles, drivers }) => (
         </div>
       </div>
 
-      <div className="bg-white text-black rounded-lg shadow-sm p-6">
+      <div className="bg-[#333] text-white rounded-lg shadow-sm p-6">
         <h3 className="text-lg font-semibold mb-4">Vehicle Status</h3>
         <div className="space-y-4">
-          {vehicles.slice(0, 3).map(vehicle => (
-            <div key={vehicle._id} className="flex justify-between items-center p-3 border rounded-lg">
+          {vehicles.slice(0, 3).map((vehicle) => (
+            <div
+              key={vehicle._id}
+              className="flex justify-between items-center p-3 bg-gray-400  rounded-lg"
+            >
               <div>
                 <h4 className="font-medium">{vehicle.model}</h4>
-                <p className="text-sm text-gray-500">{vehicle.company?.companyName || vehicle.company}</p>
+                <p className="text-sm text-gray-900">
+                  {vehicle.company?.companyName || vehicle.company}
+                </p>
               </div>
-              <StatusBadge status={vehicle.status || 'Available'} />
+              <StatusBadge status={vehicle.status || "Available"} />
             </div>
           ))}
         </div>
@@ -496,56 +567,70 @@ const DashboardContent = ({ users, companies, vehicles, drivers }) => (
 // Users content
 const UsersContent = ({ users, onDelete, onEdit }) => (
   <div>
-    <div className="flex justify-between items-center mb-6">
-      <h3 className="text-lg text-black font-semibold">User Management</h3>
-      <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg">
+    <div className="flex bg-[#333] p-3 rounded-2xl justify-between items-center mb-6">
+      <h3 className="text-lg text-white font-semibold">User Management</h3>
+      <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg">
         <Plus size={16} className="mr-2" />
         Add User
       </button>
     </div>
 
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="bg-[#333] rounded-lg shadow-sm overflow-hidden">
+      <table className="min-w-full divide-y bg-[#333] divide-gray-200">
+        <thead className="bg-[#1a1a1a]">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              User
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Email
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Role
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Status
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {users.map(user => (
+        <tbody className="bg-[#333] divide-y divide-gray-500">
+          {users.map((user) => (
             <tr key={user._id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
-                    <span className="text-gray-600 font-medium">{user.name?.charAt(0) || 'U'}</span>
+                  <div className="flex-shrink-0 h-10 w-10 bg-gray-300 rounded-full flex items-center justify-center">
+                    <span className="text-gray-600 font-medium">
+                      {user.name?.charAt(0) || "U"}
+                    </span>
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                    <div className="text-sm font-medium text-gray-300">
+                      {user.name}
+                    </div>
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {user.email}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.role || 'User'}
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                {user.role || "User"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <StatusBadge status={user.status || 'Active'} />
+                <StatusBadge status={user.status || "Active"} />
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <div className="flex space-x-2">
-                  <button 
+                  <button
                     onClick={() => onEdit(user)}
                     className="p-1 text-blue-600 hover:text-blue-800"
                   >
                     <Edit size={18} />
                   </button>
-                  <button 
+                  <button
                     onClick={() => onDelete(user._id)}
                     className="p-1 text-red-600 hover:text-red-800"
                   >
@@ -564,56 +649,68 @@ const UsersContent = ({ users, onDelete, onEdit }) => (
 // Companies content
 const CompaniesContent = ({ companies, onDelete, onEdit }) => (
   <div>
-    <div className="flex justify-between items-center mb-6">
-      <h3 className="text-lg text-black font-semibold">Company Management</h3>
-      <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg">
+    <div className="flex justify-between p-3 bg-[#333] rounded-2xl text-white items-center mb-6">
+      <h3 className="text-lg text-white font-semibold">Company Management</h3>
+      <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg">
         <Plus size={16} className="mr-2" />
         Add Company
       </button>
     </div>
 
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className="bg-[#333] rounded-lg shadow-sm overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+        <thead className="bg-[#1a1a1a]">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicles</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Drivers</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Company
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Location
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Vehicles
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Drivers
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {companies.map(company => (
+        <tbody className="bg-[#333] divide-y divide-gray-500">
+          {companies.map((company) => (
             <tr key={company._id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <div className="flex-shrink-0 h-10 w-10 bg-blue-200 rounded-full flex items-center justify-center">
                     <Building size={18} className="text-blue-600" />
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">{company.companyName || company.name}</div>
+                    <div className="text-sm font-medium text-gray-300">
+                      {company.companyName || company.name}
+                    </div>
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {company.address || company.location}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {company.vehicles?.length || company.vehicleCount}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {company.drivers?.length || company.driverCount}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 <div className="flex space-x-2">
-                  <button 
+                  <button
                     onClick={() => onEdit(company)}
                     className="p-1 text-blue-600 hover:text-blue-800"
                   >
                     <Edit size={18} />
                   </button>
-                  <button 
+                  <button
                     onClick={() => onDelete(company._id)}
                     className="p-1 text-red-600 hover:text-red-800"
                   >
@@ -632,27 +729,37 @@ const CompaniesContent = ({ companies, onDelete, onEdit }) => (
 // Vehicles content
 const VehiclesContent = ({ vehicles, onDelete, onEdit }) => (
   <div>
-    <div className="flex justify-between items-center mb-6">
-      <h3 className="text-lg text-black font-semibold">Vehicle Management</h3>
-      <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg">
+    <div className="flex justify-between p-3 rounded-2xl bg-[#333] items-center mb-6">
+      <h3 className="text-lg text-white font-semibold">Vehicle Management</h3>
+      <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg">
         <Plus size={16} className="mr-2" />
         Add Vehicle
       </button>
     </div>
 
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-y divide-gray-500">
+        <thead className="bg-[#1a1a1a]">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Model
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Type
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Company
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Status
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {vehicles.map(vehicle => (
+        <tbody className="bg-[#333] divide-y divide-gray-500">
+          {vehicles.map((vehicle) => (
             <tr key={vehicle._id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -660,30 +767,30 @@ const VehiclesContent = ({ vehicles, onDelete, onEdit }) => (
                     <Truck size={18} className="text-yellow-600" />
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-300">
                       {vehicle.manufacturer} {vehicle.model}
                     </div>
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {vehicle.type || vehicle.transmission}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {vehicle.company?.companyName || vehicle.company}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <StatusBadge status={vehicle.status || 'Available'} />
+                <StatusBadge status={vehicle.status || "Available"} />
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 <div className="flex space-x-2">
-                  <button 
+                  <button
                     onClick={() => onEdit(vehicle)}
                     className="p-1 text-blue-600 hover:text-blue-800"
                   >
                     <Edit size={18} />
                   </button>
-                  <button 
+                  <button
                     onClick={() => onDelete(vehicle._id)}
                     className="p-1 text-red-600 hover:text-red-800"
                   >
@@ -702,27 +809,37 @@ const VehiclesContent = ({ vehicles, onDelete, onEdit }) => (
 // Drivers content
 const DriversContent = ({ drivers, onDelete, onEdit }) => (
   <div>
-    <div className="flex justify-between items-center mb-6">
-      <h3 className="text-lg text-black font-semibold">Driver Management</h3>
-      <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg">
+    <div className="flex justify-between p-3 rounded-2xl bg-[#333] items-center mb-6">
+      <h3 className="text-lg text-white font-semibold">Driver Management</h3>
+      <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg">
         <Plus size={16} className="mr-2" />
         Add Driver
       </button>
     </div>
 
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="bg-[#333] rounded-lg shadow-sm overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-500">
+        <thead className="bg-[#1a1a1a]">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">License</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Driver
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Company
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              License
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Status
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {drivers.map(driver => (
+        <tbody className="bg-[#333] divide-y divide-gray-500">
+          {drivers.map((driver) => (
             <tr key={driver._id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -730,28 +847,30 @@ const DriversContent = ({ drivers, onDelete, onEdit }) => (
                     <UserCircle size={18} className="text-purple-600" />
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">{driver.name}</div>
+                    <div className="text-sm font-medium text-gray-300">
+                      {driver.name}
+                    </div>
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                 {driver.company?.companyName || driver.company}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                 {driver.license}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <StatusBadge status={driver.status || 'Available'} />
+                <StatusBadge status={driver.status || "Available"} />
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                 <div className="flex space-x-2">
-                  <button 
+                  <button
                     onClick={() => onEdit(driver)}
                     className="p-1 text-blue-600 hover:text-blue-800"
                   >
                     <Edit size={18} />
                   </button>
-                  <button 
+                  <button
                     onClick={() => onDelete(driver._id)}
                     className="p-1 text-red-600 hover:text-red-800"
                   >
@@ -769,26 +888,29 @@ const DriversContent = ({ drivers, onDelete, onEdit }) => (
 
 // Stat card component
 const StatCard = ({ title, value, icon }) => (
-  <div className="bg-white rounded-lg shadow-sm p-6 flex justify-between items-center">
+  <div className="bg-[#333] rounded-lg shadow-sm p-6 flex justify-between items-center">
     <div>
-      <p className="text-3xl font-medium text-gray-500">{title}</p>
-      <p className="text-6xl text-black font-semibold mt-1">{value}</p>
+      <p className="text-3xl font-medium text-gray-300">{title}</p>
+      <p className="text-6xl text-green-500 font-semibold mt-1">{value}</p>
     </div>
-    <div className="rounded-full bg-gray-100 p-3">
-      {icon}
-    </div>
+    <div className="rounded-full bg-gray-900 p-3">{icon}</div>
   </div>
 );
 
 // Status badge component
 const StatusBadge = ({ status }) => {
-  let bgColor = 'bg-gray-100 text-gray-800';
-  if (status === 'Active' || status === 'Available') bgColor = 'bg-green-100 text-green-800';
-  if (status === 'Inactive' || status === 'In Use' || status === 'On Trip') bgColor = 'bg-blue-100 text-blue-800';
-  if (status === 'Maintenance' || status === 'Off Duty') bgColor = 'bg-yellow-100 text-yellow-800';
+  let bgColor = "bg-gray-100 text-gray-800";
+  if (status === "Active" || status === "Available")
+    bgColor = "bg-green-100 text-green-800";
+  if (status === "Inactive" || status === "In Use" || status === "On Trip")
+    bgColor = "bg-blue-100 text-blue-800";
+  if (status === "Maintenance" || status === "Off Duty")
+    bgColor = "bg-yellow-100 text-yellow-800";
 
   return (
-    <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${bgColor}`}>
+    <span
+      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${bgColor}`}
+    >
       {status}
     </span>
   );

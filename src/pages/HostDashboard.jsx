@@ -287,10 +287,10 @@ const RentalCompanyDashboard = () => {
   }
 
   const renderSidebar = () => (
-    <div className="bg-gray-900 text-white w-64 p-6 space-y-4">
+    <div className="bg-[#1a1a1a] text-white w-64 p-6 space-y-4">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white">{company.companyName}</h2>
-        <p className="text-gray-400">Enterprise Dashboard</p>
+        <h2 className="text-2xl font-bold text-green-400">{company.companyName}</h2>
+        <p className="text-gray-300">Enterprise Dashboard</p>
       </div>
 
       <nav className="space-y-2">
@@ -307,8 +307,8 @@ const RentalCompanyDashboard = () => {
             onClick={() => setActiveSection(item.section)}
             className={`w-full flex items-center p-3 rounded transition-colors ${
               activeSection === item.section 
-                ? 'bg-blue-100 text-white' 
-                : 'hover:bg-gray-200 text-gray-300'
+                ? 'bg-green-200 text-green-400' 
+                : 'hover:bg-green-600 text-white'
             }`}
           >
             <item.icon className="mr-3" size={20} />
@@ -322,27 +322,27 @@ const RentalCompanyDashboard = () => {
   const renderOverview = () => {
     const { stats } = dashboardData;
     return (
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3  gap-6">
         {/* KPI Cards */}
-        <div className="bg-white shadow-md rounded-lg p-6 space-y-4">
+        <div className="bg-[#1a1a1a] shadow-md rounded-lg p-6 space-y-4">
           <div className="flex justify-between items-center">
-            <Car size={36} className="text-blue-600" />
-            <span className="text-3xl font-bold text-blue-600">
+            <Car size={36} className="text-green-600" />
+            <span className="text-3xl font-bold text-green-600">
               {stats.totalVehicles}
             </span>
           </div>
           <div>
-            <p className="text-black text-gray-600">Total Vehicles</p>
-            <div className="mt-2 h-2 bg-blue-200 rounded-full">
+            <p className="text-white ">Total Vehicles</p>
+            <div className="mt-2 h-2 bg-green-200 rounded-full">
               <div 
-                className="h-2 bg-blue-600 rounded-full" 
+                className="h-2 bg-green-600 rounded-full" 
                 style={{width: `${(stats.totalVehicles > 0 ? (stats.totalVehicles / stats.totalVehicles) * 100 : 0)}%`}}
               ></div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white shadow-md rounded-lg p-6 space-y-4">
+        <div className="bg-[#1a1a1a] text-white shadow-md rounded-lg p-6 space-y-4">
           <div className="flex justify-between items-center">
             <Users size={36} className="text-green-600" />
             <span className="text-3xl font-bold text-green-600">
@@ -350,7 +350,7 @@ const RentalCompanyDashboard = () => {
             </span>
           </div>
           <div>
-            <p className="text-black text-gray-600">Total Drivers</p>
+            <p className="text-white ">Total Drivers</p>
             <div className="mt-2 h-2 bg-green-200 rounded-full">
               <div 
                 className="h-2 bg-green-600 rounded-full" 
@@ -360,18 +360,18 @@ const RentalCompanyDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white shadow-md rounded-lg p-6 space-y-4">
+        <div className="bg-[#1a1a1a] shadow-md rounded-lg p-6 space-y-4">
           <div className="flex justify-between items-center">
-            <DollarSign size={36} className="text-purple-600" />
-            <span className="text-3xl font-bold text-purple-600">
+            <DollarSign size={36} className="text-green-600" />
+            <span className="text-3xl font-bold text-green-600">
               ${stats.revenue.toLocaleString()}
             </span>
           </div>
           <div>
-            <p className="text-black text-gray-600">Total Revenue</p>
-            <div className="mt-2 h-2 bg-purple-200 rounded-full">
+            <p className="text-white ">Total Revenue</p>
+            <div className="mt-2 h-2 bg-green-200 rounded-full">
               <div 
-                className="h-2 bg-purple-600 rounded-full" 
+                className="h-2 bg-green-600 rounded-full" 
                 style={{width: `${stats.occupancyRate}%`}}
               ></div>
             </div>
@@ -379,22 +379,22 @@ const RentalCompanyDashboard = () => {
         </div>
 
         {/* Recent Bookings */}
-        <div className="col-span-3 bg-white shadow-md rounded-lg p-6">
-          <h3 className="text-xl font-semibold text-black mb-4 flex items-center">
-            <MessageCircle className="mr-3 text-gray-600" />
+        <div className="col-span-3 bg-[#1a1a1a] shadow-md rounded-lg p-6">
+          <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+            <MessageCircle className="mr-3 text-gray-300" />
             Recent Bookings
           </h3>
           <div className="space-y-3">
             {dashboardData.bookings.slice(0, 5).map((booking) => (
               <div 
                 key={booking._id} 
-                className="flex justify-between items-center p-3 bg-gray-100 rounded-lg"
+                className="flex justify-between items-center p-3 bg-[#1a1a1a] rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-black">
+                  <p className="font-medium text-white">
                     Booking #{booking._id.slice(-6)}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-300">
                     {new Date(booking.startDate).toLocaleDateString()} - {new Date(booking.endDate).toLocaleDateString()}
                   </p>
                 </div>
@@ -650,12 +650,12 @@ const RentalCompanyDashboard = () => {
   );
 
   const renderVehicles = () => (
-    <div className="bg-white shadow-md rounded-lg p-6">
+    <div className="bg-[#1a1a1a] shadow-md rounded-lg p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-black">Vehicle Fleet</h2>
+        <h2 className="text-2xl font-bold text-white">Vehicle Fleet</h2>
         <button 
           onClick={() => setShowVehicleForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors flex items-center"
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors flex items-center"
         >
           <Plus size={18} className="mr-2" />
           Add New Vehicle
@@ -663,20 +663,20 @@ const RentalCompanyDashboard = () => {
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-600 rounded-2xl">
             <tr>
-              <th className="p-3 text-black text-left">Image</th>
-              <th className="p-3 text-black text-left">Manufacturer</th>
-              <th className="p-3 text-black text-left">Model</th>
-              <th className="p-3 text-black text-left">Number Plate</th>
-              <th className="p-3 text-black text-left">Capacity</th>
-              <th className="p-3 text-black text-left">Transmission</th>
-              <th className="p-3 text-black text-left">Actions</th>
+              <th className="p-3 text-gray-300 text-left">Image</th>
+              <th className="p-3 text-gray-300 text-left">Manufacturer</th>
+              <th className="p-3 text-gray-300 text-left">Model</th>
+              <th className="p-3 text-gray-300 text-left">Number Plate</th>
+              <th className="p-3 text-gray-300 text-left">Capacity</th>
+              <th className="p-3 text-gray-300 text-left">Transmission</th>
+              <th className="p-3 text-gray-300 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {dashboardData.vehicles.map((vehicle) => (
-              <tr key={vehicle._id} className="border-b text-black hover:bg-gray-50">
+              <tr key={vehicle._id} className="border-b bg-[#1a1a1a] text-white hover:bg-green-600">
                 <td className="p-3">
                   {vehicle.carImageUrls && vehicle.carImageUrls.length > 0 ? (
                     <img 
@@ -715,9 +715,9 @@ const RentalCompanyDashboard = () => {
   );
 
   const renderDrivers = () => (
-    <div className="bg-white shadow-md rounded-lg p-6">
+    <div className="bg-[#1a1a1a] shadow-md rounded-lg p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-black">Driver Management</h2>
+        <h2 className="text-2xl font-bold text-white">Driver Management</h2>
         <button 
           onClick={() => setShowDriverForm(true)}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors flex items-center"
@@ -728,20 +728,20 @@ const RentalCompanyDashboard = () => {
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-600">
             <tr>
-              <th className="p-3 text-black text-left">Profile</th>
-              <th className="p-3 text-black text-left">Name</th>
-              <th className="p-3 text-black text-left">License</th>
-              <th className="p-3 text-black text-left">Phone</th>
-              <th className="p-3 text-black text-left">Age</th>
-              <th className="p-3 text-black text-left">Experience</th>
-              <th className="p-3 text-black text-left">Actions</th>
+              <th className="p-3 text-gray-300 text-left">Profile</th>
+              <th className="p-3 text-gray-300 text-left">Name</th>
+              <th className="p-3 text-gray-300 text-left">License</th>
+              <th className="p-3 text-gray-300 text-left">Phone</th>
+              <th className="p-3 text-gray-300 text-left">Age</th>
+              <th className="p-3 text-gray-300 text-left">Experience</th>
+              <th className="p-3 text-gray-300 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {dashboardData.drivers.map((driver) => (
-              <tr key={driver._id} className="border-b text-black hover:bg-gray-50">
+              <tr key={driver._id} className="border-b bg-gray-900 text-white hover:bg-gray-50">
                 <td className="p-3">
                   {driver.profileimg ? (
                     <img 
@@ -780,12 +780,12 @@ const RentalCompanyDashboard = () => {
   );
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-[#333]">
       {renderSidebar()}
       
       <main className="flex-1 overflow-y-auto p-10">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6 text-black">
+          <h1 className="text-3xl font-bold mb-6 text-green-500">
             {activeSection === 'overview' && 'Dashboard Overview'}
             {activeSection === 'vehicles' && 'Vehicle Fleet Management'}
             {activeSection === 'drivers' && 'Driver Management'}
