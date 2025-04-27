@@ -8,10 +8,11 @@ import { useGoogleAuth } from "../components/GoogleAuth";
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isCompanyLogin, setIsCompanyLogin] = useState(false);
-  const { isLoading, renderGoogleButton, signInWithGoogle } = useGoogleAuth();
+  const { renderGoogleButton, signInWithGoogle } = useGoogleAuth();
   const googleButtonRef = useRef(null);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
@@ -37,28 +39,34 @@ const Login = () => {
 
     try {
       // First try user login
-      let response = await fetch("https://car-rental-backend-black.vercel.app/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      let data = await response.json();
-
-      if (!response.ok) {
-        // If user login fails, try company login
-        response = await fetch("https://car-rental-backend-black.vercel.app/rental-companies/login", {
+      let response = await fetch(
+        "https://car-rental-backend-black.vercel.app/users/login",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ email, password }),
-        });
+        }
+      );
+
+      let data = await response.json();
+
+      if (!response.ok) {
+        // If user login fails, try company login
+        response = await fetch(
+          "https://car-rental-backend-black.vercel.app/rental-companies/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          }
+        );
 
         data = await response.json();
-
+        setIsLoading(false);
         if (!response.ok) {
           throw new Error(data.message || "Login failed. Please try again.");
         }
@@ -69,24 +77,32 @@ const Login = () => {
 
       // Store user/company data in cookies with 7-day expiration
       if (data.user?._id) {
-        Cookies.set("user", JSON.stringify({
-          id: data.user._id,
-          email: data.user.email,
-          name: data.user.name,
-          city: data.user.city
-        }), { expires: 7 });
-        
+        Cookies.set(
+          "user",
+          JSON.stringify({
+            id: data.user._id,
+            email: data.user.email,
+            name: data.user.name,
+            city: data.user.city,
+          }),
+          { expires: 7 }
+        );
+
         if (data.token) {
           Cookies.set("token", data.token, { expires: 7 });
         }
       } else if (data.company?._id) {
-        Cookies.set("company", JSON.stringify({
-          id: data.company._id,
-          email: data.company.email,
-          companyName: data.company.companyName,
-          isCompany: true
-        }), { expires: 7 });
-        
+        Cookies.set(
+          "company",
+          JSON.stringify({
+            id: data.company._id,
+            email: data.company.email,
+            companyName: data.company.companyName,
+            isCompany: true,
+          }),
+          { expires: 7 }
+        );
+
         if (data.token) {
           Cookies.set("token", data.token, { expires: 7 });
         }
@@ -98,7 +114,6 @@ const Login = () => {
       } else {
         navigate("/");
       }
-
     } catch (error) {
       setError(error.message || "An error occurred. Please try again.");
     }
@@ -108,14 +123,22 @@ const Login = () => {
     <div className="login-container">
       {/* Left Section */}
       <div className="login-left">
-        <img src="./assets/login.jpg" alt="Car Rental" className="login-image" />
+        <img
+          src="./assets/login.jpg"
+          alt="Car Rental"
+          className="login-image"
+        />
       </div>
 
       {/* Right Section */}
       <div className="login-right bg-[#121212]">
         <div className="login-box text-black">
-          <h2 className="fw-bold text-[#1ecb15] text-4xl font-bold mb-3">Welcome back</h2>
-          <p className="text-secondary text-white mb-4">Please enter your login details below</p>
+          <h2 className="fw-bold text-[#1ecb15] text-4xl font-bold mb-3">
+            Welcome back
+          </h2>
+          <p className="text-secondary text-white mb-4">
+            Please enter your login details below
+          </p>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit}>
@@ -141,23 +164,25 @@ const Login = () => {
               />
             </div>
             <div className="d-flex justify-content-between text-black align-items-center mb-4">
-              <a href="#" className="text-[#1ecb15] text-decoration-none">Forgot Password?</a>
+              <a href="#" className="text-[#1ecb15] text-decoration-none">
+                Forgot Password?
+              </a>
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn btn-primary text-white py-2 mb-3"
               disabled={isLoading}
             >
               {isLoading ? "Please wait..." : "Log in"}
             </button>
-            
+
             {/* Google Sign In */}
-            <div 
-              id="google-login-button" 
+            <div
+              id="google-login-button"
               ref={googleButtonRef}
               className="mb-3"
             >
-              <button 
+              <button
                 type="button"
                 className="btn btn-outline-secondary  py-2 d-flex align-items-center justify-content-center"
                 onClick={signInWithGoogle}

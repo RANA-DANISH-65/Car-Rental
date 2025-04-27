@@ -3,7 +3,6 @@ import FAQItem from "../components/Faq";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-
 const CarRentalMarket = ({ brandName, carModels }) => {
   const navigate = useNavigate();
   const [likedVehicles, setLikedVehicles] = useState([]);
@@ -19,12 +18,12 @@ const CarRentalMarket = ({ brandName, carModels }) => {
   const handleCarFavorites = async (vehicleId) => {
     const user = Cookies.get("user");
     const userId = user ? JSON.parse(user).id : null;
-  
+
     if (!userId) {
       alert("Please login to favorite cars.");
       return;
     }
-  
+
     try {
       if (likedVehicles.includes(vehicleId)) {
         // Unlike (DELETE)
@@ -34,12 +33,12 @@ const CarRentalMarket = ({ brandName, carModels }) => {
             method: "DELETE",
           }
         );
-        
+
         console.log(await response.json());
         if (!response.ok) {
           throw new Error("Failed to unlike vehicle");
         }
-  
+
         setLikedVehicles((prev) => prev.filter((id) => id !== vehicleId));
       } else {
         // Like (POST)
@@ -58,7 +57,7 @@ const CarRentalMarket = ({ brandName, carModels }) => {
           const data = await response.json();
           throw new Error(data.message || "Failed to like vehicle");
         }
-  
+
         setLikedVehicles((prev) => [...prev, vehicleId]);
         console.log("Liked vehicles:", likedVehicles);
       }
@@ -66,7 +65,6 @@ const CarRentalMarket = ({ brandName, carModels }) => {
       console.error("Error toggling like:", error.message);
     }
   };
-  
 
   useEffect(() => {
     const fetchLikedVehicles = async () => {
@@ -74,15 +72,15 @@ const CarRentalMarket = ({ brandName, carModels }) => {
         const user = Cookies.get("user");
         const userId = user ? JSON.parse(user).id : null;
         if (!userId) return;
-  
+
         const response = await fetch(
           `https://car-rental-backend-black.vercel.app/likes/liked-vehicles/${userId}`
         );
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch liked vehicles");
         }
-  
+
         const data = await response.json();
         const likedIds = data.map((vehicle) => vehicle._id);
         setLikedVehicles(likedIds);
@@ -91,11 +89,17 @@ const CarRentalMarket = ({ brandName, carModels }) => {
         console.error("Failed to fetch liked vehicles:", err.message);
       }
     };
-  
+
     fetchLikedVehicles();
   }, []);
-  
+
   const handleCarCardClick = (carId) => {
+    const user = Cookies.get("user");
+    const userId = user ? JSON.parse(user).id : null;
+    if (!userId) {
+      alert("Please Login");
+      return;
+    }
     navigate(`/car-detail/${carId}`);
   };
 
@@ -346,7 +350,9 @@ const CarRentalMarket = ({ brandName, carModels }) => {
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
-                      fill={likedVehicles.includes(car._id) ? "#1ecb15" : "none"}       
+                      fill={
+                        likedVehicles.includes(car._id) ? "#1ecb15" : "none"
+                      }
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
